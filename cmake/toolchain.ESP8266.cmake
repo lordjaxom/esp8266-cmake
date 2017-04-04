@@ -41,10 +41,37 @@ message("Using " ${ESP8266_XTENSA_CXX_COMPILER} " C++ compiler.")
 set(CMAKE_C_COMPILER ${ESP8266_XTENSA_C_COMPILER})
 set(CMAKE_CXX_COMPILER ${ESP8266_XTENSA_CXX_COMPILER})
 
-set(CMAKE_C_FLAGS "-w -Os -g -std=gnu99 -Wpointer-arith -Wno-implicit-function-declaration -Wundef -pipe -D__ets__ -DICACHE_FLASH -fno-inline-functions -ffunction-sections -nostdlib -mlongcalls -mtext-section-literals -falign-functions=4 -fdata-sections" CACHE STRING "C compiler flags" FORCE)
-set(CMAKE_CXX_FLAGS "-w -Os -g -D__ets__ -DICACHE_FLASH -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections" CACHE STRING "CXX compiler flags" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L${ARDUINO_ESP8266_DIR}/tools/sdk/ld -Teagle.flash.${ESP8266_FLASH_SIZE}.ld -u call_user_start -Wl,-wrap,system_restart_local -Wl,-wrap,register_chipv6_phy" CACHE STRING "linker flags" FORCE)
+# Optimization flags
+set(OPTIMIZATION_FLAGS "-Os -g")
 
-set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -Wl,--end-group" CACHE STRING "C linker invocation")
-set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -Wl,--end-group" CACHE STRING "CXX linker invocation")
+# Flags which control code generation and dependency generation, both for C and C++
+set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 \
+                  -mlongcalls \
+                  -nostdlib \
+                  -mtext-section-literals \
+                  -DICACHE_FLASH \
+                  -D__ets__")
 
+# Warnings-related flags relevant C
+set(COMMON_WARNING_FLAGS "-w -Wpointer-arith \
+                          -Wno-implicit-function-declaration \
+                          -Wundef")
+
+set(CMAKE_C_FLAGS "-std=gnu99 \
+                   -fno-inline-functions \
+                   -pipe \
+                   ${OPTIMIZATION_FLAGS} \
+                   ${COMMON_FLAGS} \
+                   ${COMMON_WARNING_FLAGS}")
+
+set(CMAKE_CXX_FLAGS "-std=gnu++11 \
+                     -fno-exceptions \
+                     -fno-rtti \
+                     -MMD \
+                     ${OPTIMIZATION_FLAGS} \
+                     ${COMMON_FLAGS}")
+
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections")
+
+set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
+set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
