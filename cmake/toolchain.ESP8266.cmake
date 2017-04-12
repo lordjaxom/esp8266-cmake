@@ -1,77 +1,60 @@
+# Sets up a toolchain from Arduino ESP8266 core
+#
+# Reads settings from the following variables:
+#
+#   ESP8266_FLASH          - The flash memory layout of the ESP8266
+#   ARDUINO_ESP8266_DIR    - ESP8266 core directory
+#   ARDUINO_ESP8266_TOOLS  - ESP8266 tools directory
+#   ARDUINO_SKETCHES_DIR   - Path to Arduino sketches directory
+#   ARDUINO_LIBRARIES      - List of libraries to include from Arduino
+#
+#
+# Uses hints from the following variables:
+#
+#   ARDUINO_HOME           - Arduino installation directory
+#   ARDUINO_USER           - Arduino user settings directory
+#
+
 set(CMAKE_SYSTEM_NAME ESP8266)
 set(CMAKE_SYSTEM_VERSION 1)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/Modules")
 
-set (ESP8266_FLASH_SIZE "2m" CACHE STRING "Size of flash")
-set (ESP8266_LINKER_SCRIPT "eagle.flash.${ESP8266_FLASH_SIZE}.ld")
+include(CheckESP8266HostDefaults)
+include(CheckESP8266CoreDir)
+include(CheckESP8266ToolsDir)
+include(CheckESP8266Flash)
 
-if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
-    set(USER_HOME $ENV{HOME})
-    set(HOST_EXECUTABLE_PREFIX "")
-    set(ESP8266_ESPTOOL_COM_PORT /dev/ttyUSB0 CACHE STRING "COM port to be used by esptool")
-elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    set(USER_HOME $ENV{USERPROFILE})
-    set(HOST_EXECUTABLE_SUFFIX ".exe")
-    set(ESP8266_ESPTOOL_COM_PORT COM1 CACHE STRING "COM port to be used by esptool")
-else()
-    message(FATAL_ERROR Unsupported build platform.)
-endif()
+set(ESP8266_XTENSA_C_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-gcc${ESP8266_EXEC_SUFFIX}")
+set(ESP8266_XTENSA_CXX_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
+set(ESP8266_XTENSA_SIZE "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-size${ESP8266_EXEC_SUFFIX}")
+set(ESP8266_ESPTOOL "${ARDUINO_ESP8266_TOOLS}/esptool/esptool${ESP8266_EXEC_SUFFIX}")
 
-set(ARDUINO_DIR "${USER_HOME}/.arduino15" CACHE PATH "Path to the directory containing the Arduino package files")
-if (ARDUINO_DIR STREQUAL "")
-    message(FATAL_ERROR "ARDUINO_DIR has not been set.")
-endif ()
+message(STATUS "Using ARDUINO_ESP8266_DIR ${ARDUINO_ESP8266_DIR}")
+message(STATUS "Using ARDUINO_ESP8266_TOOLS ${ARDUINO_ESP8266_TOOLS}")
+message(STATUS "Using ${ESP8266_XTENSA_C_COMPILER} C compiler")
+message(STATUS "Using ${ESP8266_XTENSA_CXX_COMPILER} C++ compiler")
+message(STATUS "Using ${ESP8266_XTENSA_SIZE} size")
+message(STATUS "Using ${ESP8266_ESPTOOL} esptool")
 
-set(ARDUINO_ESP8266_DIR ${ARDUINO_DIR}/packages/esp8266/hardware/esp8266/2.3.0 CACHE PATH "Path to the directory containing ESP8266 specific arduino files")
-if (ARDUINO_ESP8266_DIR STREQUAL "")
-    message(FATAL_ERROR "ARDUINO_ESP8266_DIR has not been set.")
-endif ()
+set(CMAKE_C_COMPILER "${ESP8266_XTENSA_C_COMPILER}")
+set(CMAKE_CXX_COMPILER "${ESP8266_XTENSA_CXX_COMPILER}")
 
-file(GLOB_RECURSE ESP8266_XTENSA_C_COMPILERS ${ARDUINO_DIR}/packages/esp8266/tools/xtensa-lx106-elf-gcc FOLLOW_SYMLINKS xtensa-lx106-elf-gcc${HOST_EXECUTABLE_SUFFIX})
-list(GET ESP8266_XTENSA_C_COMPILERS 0 ESP8266_XTENSA_C_COMPILER)
-file(GLOB_RECURSE ESP8266_XTENSA_CXX_COMPILERS ${ARDUINO_DIR}/packages/esp8266/tools/xtensa-lx106-elf-gcc FOLLOW_SYMLINKS xtensa-lx106-elf-g++${HOST_EXECUTABLE_SUFFIX})
-list(GET ESP8266_XTENSA_CXX_COMPILERS 0 ESP8266_XTENSA_CXX_COMPILER)
-file(GLOB_RECURSE ESP8266_ESPTOOLS ${ARDUINO_DIR}/packages/esp8266/tools/esptool FOLLOW_SYMLINKS esptool${HOST_EXECUTABLE_NAME})
-list(GET ESP8266_ESPTOOLS 0 ESP8266_ESPTOOL)
+set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlongcalls -nostdlib -mtext-section-literals -DICACHE_FLASH -D__ets__")
+set(OPTIMIZE_FLAGS "-Os -g")
 
-message("Using " ${ESP8266_XTENSA_C_COMPILER} " C compiler.")
-message("Using " ${ESP8266_XTENSA_CXX_COMPILER} " C++ compiler.")
-
-set(CMAKE_C_COMPILER ${ESP8266_XTENSA_C_COMPILER})
-set(CMAKE_CXX_COMPILER ${ESP8266_XTENSA_CXX_COMPILER})
-
-# Optimization flags
-set(OPTIMIZATION_FLAGS "-Os -g")
-
-# Flags which control code generation and dependency generation, both for C and C++
-set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 \
-                  -mlongcalls \
-                  -nostdlib \
-                  -mtext-section-literals \
-                  -DICACHE_FLASH \
-                  -D__ets__")
-
-# Warnings-related flags relevant C
-set(COMMON_WARNING_FLAGS "-w -Wpointer-arith \
-                          -Wno-implicit-function-declaration \
-                          -Wundef")
-
-set(CMAKE_C_FLAGS "-std=gnu99 \
-                   -fno-inline-functions \
-                   -pipe \
-                   ${OPTIMIZATION_FLAGS} \
-                   ${COMMON_FLAGS} \
-                   ${COMMON_WARNING_FLAGS}")
-
-set(CMAKE_CXX_FLAGS "-std=gnu++11 \
-                     -fno-exceptions \
-                     -fno-rtti \
-                     -MMD \
-                     ${OPTIMIZATION_FLAGS} \
-                     ${COMMON_FLAGS}")
-
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections")
+set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -Wundef ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
+set(CMAKE_CXX_FLAGS "-std=gnu++11 -fno-exceptions -fno-rtti -MMD ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib \
+                            -Wl,--no-check-sections \
+                            -Wl,-static \
+                            -Wl,--gc-sections \
+                            -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" \
+                            -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld \
+                            -u call_user_start \
+                            -Wl,-wrap,system_restart_local \
+                            -Wl,-wrap,register_chipv6_phy"
+                            CACHE STRING "Linker flags" FORCE)
 
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
