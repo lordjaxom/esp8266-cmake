@@ -43,18 +43,9 @@ set(CMAKE_CXX_COMPILER "${ESP8266_XTENSA_CXX_COMPILER}")
 set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlongcalls -nostdlib -mtext-section-literals -DICACHE_FLASH -D__ets__")
 set(OPTIMIZE_FLAGS "-Os -g")
 
-set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -Wundef ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
+set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
 set(CMAKE_CXX_FLAGS "-std=gnu++11 -fno-exceptions -fno-rtti -MMD ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib \
-                            -Wl,--no-check-sections \
-                            -Wl,-static \
-                            -Wl,--gc-sections \
-                            -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" \
-                            -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld \
-                            -u call_user_start \
-                            -Wl,-wrap,system_restart_local \
-                            -Wl,-wrap,register_chipv6_phy"
-                            CACHE STRING "Linker flags" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld -u call_user_start -Wl,-wrap,system_restart_local -Wl,-wrap,register_chipv6_phy" CACHE STRING "Linker flags" FORCE)
 
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -lc -Wl,--end-group")
