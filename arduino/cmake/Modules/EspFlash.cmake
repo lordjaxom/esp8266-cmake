@@ -7,9 +7,11 @@ set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES firmware.bin)
 
 add_dependencies(firmware_binary firmware)
 
-add_custom_target(
-    flash COMMAND
-    ${ESP8266_ESPTOOL} -vv -cd ck -cb 115200 -cp ${ESP8266_ESPTOOL_COM_PORT} -ca 0x00000 -cf firmware.bin
-)
+if(NOT "${ESP8266_ESPTOOL_COM_PORT}" STREQUAL "")
+    add_custom_target(
+        flash COMMAND
+        ${ESP8266_ESPTOOL} -vv -cd ck -cb 115200 -cp ${ESP8266_ESPTOOL_COM_PORT} -ca 0x00000 -cf firmware.bin
+    )
 
-add_dependencies(flash firmware_binary)
+    add_dependencies(flash firmware_binary)
+endif()

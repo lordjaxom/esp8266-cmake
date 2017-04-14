@@ -24,6 +24,7 @@ include(CheckESP8266HostDefaults)
 include(CheckESP8266CoreDir)
 include(CheckESP8266ToolsDir)
 include(CheckESP8266Flash)
+include(CheckESP8266ComPort)
 
 set(ESP8266_XTENSA_C_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-gcc${ESP8266_EXEC_SUFFIX}")
 set(ESP8266_XTENSA_CXX_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
