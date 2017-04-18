@@ -19,30 +19,6 @@ find_library(ESP8266_SDK_LIB_WPA wpa ${ARDUINO_ESP8266_DIR}/tools/sdk/lib)
 find_library(ESP8266_SDK_LIB_WPA2 wpa2 ${ARDUINO_ESP8266_DIR}/tools/sdk/lib)
 find_library(ESP8266_SDK_LIB_WPS wps ${ARDUINO_ESP8266_DIR}/tools/sdk/lib)
 
-install(FILES 
-    ${ESP8266_SDK_LIB_AT}
-    ${ESP8266_SDK_LIB_AXTLS}
-    ${ESP8266_SDK_LIB_CRYPTO}
-    ${ESP8266_SDK_LIB_ESPNOW}
-    ${ESP8266_SDK_LIB_HAL}
-    ${ESP8266_SDK_LIB_JSON}
-    ${ESP8266_SDK_LIB_LWIP}
-    ${ESP8266_SDK_LIB_LWIP_GCC}
-    ${ESP8266_SDK_LIB_MAIN}
-    ${ESP8266_SDK_LIB_MESH}
-    ${ESP8266_SDK_LIB_NET80211}
-    ${ESP8266_SDK_LIB_PHY}
-    ${ESP8266_SDK_LIB_PP}
-    ${ESP8266_SDK_LIB_PWM}
-    ${ESP8266_SDK_LIB_SMARTCONFIG}
-    ${ESP8266_SDK_LIB_SSL}
-    ${ESP8266_SDK_LIB_UPGRADE}
-    ${ESP8266_SDK_LIB_WPA}
-    ${ESP8266_SDK_LIB_WPA2}
-    ${ESP8266_SDK_LIB_WPS}
-    DESTINATION lib
-)
-
 file(GLOB_RECURSE ARDUINO_SRC
     ${ARDUINO_ESP8266_DIR}/cores/esp8266/*.c
     ${ARDUINO_ESP8266_DIR}/cores/esp8266/*.cpp
@@ -100,8 +76,6 @@ target_compile_options(arduino PUBLIC
 install(TARGETS arduino ARCHIVE DESTINATION lib)
 
 install(DIRECTORY cmake/Modules/ DESTINATION cmake/Modules FILES_MATCHING PATTERN "*.cmake")
-install(DIRECTORY ${ARDUINO_ESP8266_DIR}/tools/sdk/ld/ DESTINATION ld FILES_MATCHING PATTERN "*.ld")
-install(FILES ${ARDUINO_ESP8266_DIR}/bootloaders/eboot/eboot.elf DESTINATION bootloaders/eboot)
 
 add_subdirectory(libraries)
 add_subdirectory(extlib)

@@ -1,7 +1,4 @@
-#add_subdirectory(ArduinoOTA)
 add_subdirectory(ESP8266WiFi)
 add_subdirectory(ESP8266WebServer)
-#add_subdirectory(ESP8266mDNS)
-#add_subdirectory(GDBStub)
 add_subdirectory(SPI)
 add_subdirectory(Wire)
