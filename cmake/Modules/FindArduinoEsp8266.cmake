@@ -65,7 +65,8 @@ set(ARDUINO_DEFINITIONS
         LWIP_OPEN_SRC)
 
 set(ARDUINO_OPTIONS
-        -U__STRICT_ANSI__)
+        -U__STRICT_ANSI__
+        -include Arduino.h)
 
 find_library(ARDUINO_LIBRARY arduino HINTS "${_IMPORT_PREFIX}/lib")
 find_package_handle_standard_args(ArduinoEsp8266 DEFAULT_MSG ARDUINO_LIBRARY)
