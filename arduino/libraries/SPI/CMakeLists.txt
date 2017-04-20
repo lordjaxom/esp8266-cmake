@@ -1,7 +1,7 @@
 file(GLOB SPI_LIB_SRC
-    ${ARDUINO_ESP8266_DIR}/libraries/SPI/*.cpp
-)
+    ${ARDUINO_ESP8266_DIR}/libraries/SPI/*.cpp)
 
+add_library(SPI STATIC ${LIB_SRC})
 target_sources(arduino PRIVATE
     ${SPI_LIB_SRC}
 )

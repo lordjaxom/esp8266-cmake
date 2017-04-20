@@ -1,14 +1,16 @@
-set(ESP8266_FLASH "512k0" CACHE STRING "The flash memory layout of the ESP8266")
-
-set(ESP8266_FLASH_VALUES 
-        "512k0" "512k64" "512k128" "1m64" "1m128" "1m144" "1m160" "1m192" "1m256" "1m512"
-        "2m" "4m" "4m1m" "8m" "16m")
-set_property(CACHE ESP8266_FLASH PROPERTY STRINGS "${ESP8266_FLASH_VALUES}")
+if("${ESP8266_FLASH}" STREQUAL "" AND NOT "$ENV{ESP8266_FLASH}" STREQUAL "")
+    set(ESP8266_FLASH "$ENV{ESP8266_FLASH}" CACHE STRING "The flash memory layout of the ESP8266")
+endif()
 
 if("${ESP8266_FLASH}" STREQUAL "")
     message(FATAL_ERROR "ESP8266_FLASH is not set")
 endif()
-        
+
+set(ESP8266_FLASH_VALUES
+        "512k0" "512k64" "512k128" "1m64" "1m128" "1m144" "1m160" "1m192" "1m256" "1m512"
+        "2m" "4m" "4m1m" "8m" "16m")
+set_property(CACHE ESP8266_FLASH PROPERTY STRINGS "${ESP8266_FLASH_VALUES}")
+
 if("${ESP8266_FLASH}" MATCHES "^512[kK](0[kK]?)?")
     set(ESP8266_FLASH_SIZE "512K")
     set(ESP8266_FLASH_LAYOUT "512k0")
@@ -52,8 +54,12 @@ elseif("${ESP8266_FLASH}" MATCHES "8[mM](0[kK]?)?")
     set(ESP8266_FLASH_SIZE "8M")
     set(ESP8266_FLASH_LAYOUT "8m")
 elseif("${ESP8266_FLASH}" MATCHES "16[mM](0[kK]?)?")
-    set(ESP8266_FLASH_SIZE "16")
-    set(ESP8266_FLASH_LAYOUT "16")
+    set(ESP8266_FLASH_SIZE "16M")
+    set(ESP8266_FLASH_LAYOUT "16m")
 else()
     message(FATAL_ERROR "Unknown value ${ESP8266_FLASH} for ESP8266_FLASH")
 endif()
+
+message(STATUS "Using ESP8266_FLASH_LAYOUT ${ESP8266_FLASH_LAYOUT}")
+
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld")
