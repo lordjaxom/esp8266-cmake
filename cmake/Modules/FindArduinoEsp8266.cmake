@@ -32,7 +32,8 @@ find_library(ESP8266_SDK_LIB_WPS wps "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 set(ARDUINO_INC_DIRS
         "${ARDUINO_ESP8266_DIR}/cores/esp8266"
         "${ARDUINO_ESP8266_DIR}/tools/sdk/include"
-        "${ARDUINO_ESP8266_DIR}/variants/generic")
+        "${ARDUINO_ESP8266_DIR}/variants/generic"
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip/include")
 
 set(ARDUINO_DEP_LIBS
         "${ESP8266_SDK_LIB_AXTLS}"

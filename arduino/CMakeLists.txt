@@ -35,17 +35,17 @@ add_library(arduino STATIC
         ${ARDUINO_SRC_ASM})
 
 target_include_directories(arduino PUBLIC
-        ${ARDUINO_ESP8266_DIR}/cores/esp8266
-        ${ARDUINO_ESP8266_DIR}/tools/sdk/include
-        ${ARDUINO_ESP8266_DIR}/variants/generic
-        ${ARDUINO_ESP8266_DIR}/tools/sdk/lwip/include)
+        "${ARDUINO_ESP8266_DIR}/cores/esp8266"
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/include"
+        "${ARDUINO_ESP8266_DIR}/variants/generic"
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip/include")
 
 target_compile_definitions(arduino PUBLIC
         -DF_CPU=80000000L
         -DARDUINO=10801
         -DARDUINO_ESP8266_ESP01
         -DARDUINO_ARCH_ESP8266
-        -DARDUINO_BOARD="ESP8266_ESP01"
+        -DARDUINO_BOARD=ESP8266_ESP01
         -DESP8266
         -DLWIP_OPEN_SRC)
 
@@ -55,4 +55,3 @@ target_compile_options(arduino PUBLIC
 install(TARGETS arduino ARCHIVE DESTINATION lib)
 
 add_subdirectory(libraries)
-#add_subdirectory(extlib)
