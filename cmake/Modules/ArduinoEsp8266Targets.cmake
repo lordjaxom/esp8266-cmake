@@ -2,6 +2,9 @@ function(add_esp8266_executable name)
     add_executable("${name}" ${ARGN})
     target_link_libraries("${name}" PUBLIC ${ArduinoEsp8266_LIBRARIES})
 
+    include(ArduinoEsp8266Flash)
+    set_target_properties("${name}" PROPERTIES LINK_FLAGS "-L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld")
+
     add_custom_command(TARGET "${name}" POST_BUILD
             COMMAND "${ESP8266_XTENSA_SIZE}" "$<TARGET_FILE:${name}>")
     add_custom_command(TARGET "${name}" POST_BUILD

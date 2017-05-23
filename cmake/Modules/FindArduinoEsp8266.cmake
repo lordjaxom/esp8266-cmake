@@ -5,7 +5,7 @@ get_filename_component(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
 
 include(FindPackageHandleStandardArgs)
 
-include(CheckESP8266Flash)
+# include(CheckESP8266Flash)
 include(CheckESP8266ComPort)
 
 find_library(ESP8266_SDK_LIB_AT at "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
@@ -112,4 +112,4 @@ foreach(LIB ${ArduinoEsp8266_FIND_COMPONENTS})
 
 endforeach()
 
-include(FindArduinoEsp8266Targets)
+include(ArduinoEsp8266Targets)
