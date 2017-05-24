@@ -43,7 +43,7 @@ set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlong
 set(OPTIMIZE_FLAGS "-O2")
 
 set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -fno-inline-functions ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
-set(CMAKE_CXX_FLAGS "-std=c++11 -fno-exceptions -fno-rtti ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
+set(CMAKE_CXX_FLAGS "-std=c++14 -fno-exceptions -fno-rtti ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/lib\" -u call_user_start -u _printf_float -u _scanf_float -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read" CACHE STRING "Linker flags" FORCE)
 
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -Wl,--end-group")
