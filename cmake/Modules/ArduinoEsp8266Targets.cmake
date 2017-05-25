@@ -1,8 +1,15 @@
 function(add_esp8266_executable name)
-    add_executable("${name}" ${ARGN})
+    cmake_parse_arguments(ESP8266 "" "FLASH" "" ${ARGN})
+
+    add_executable("${name}" ${ESP8266_UNPARSED_ARGUMENTS})
     target_link_libraries("${name}" PUBLIC ${ArduinoEsp8266_LIBRARIES})
 
     include(ArduinoEsp8266Flash)
+    if(NOT "${ESP8266_FLASH_FOUND}" STREQUAL "TRUE")
+        message(FATAL_ERROR "Flash size not set for ${name} and no fallback in ESP8266_FLASH_SIZE")
+    endif()
+    message(STATUS "Using flash layout ${ESP8266_FLASH_LAYOUT} for target ${name}")
+
     set_target_properties("${name}" PROPERTIES LINK_FLAGS "-L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld")
 
     add_custom_command(TARGET "${name}" POST_BUILD
