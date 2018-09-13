@@ -24,10 +24,10 @@ include(CheckESP8266HostDefaults)
 include(CheckESP8266CoreDir)
 include(CheckESP8266ToolsDir)
 
-set(ESP8266_XTENSA_C_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-gcc${ESP8266_EXEC_SUFFIX}")
-set(ESP8266_XTENSA_CXX_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
-set(ESP8266_XTENSA_SIZE "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf/bin/xtensa-lx106-elf-size${ESP8266_EXEC_SUFFIX}")
-set(ESP8266_ESPTOOL "${ARDUINO_ESP8266_TOOLS}/esptool/esptool${ESP8266_EXEC_SUFFIX}")
+file(GLOB_RECURSE ESP8266_XTENSA_C_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-gcc${ESP8266_EXEC_SUFFIX}")
+file(GLOB_RECURSE ESP8266_XTENSA_CXX_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
+file(GLOB_RECURSE ESP8266_XTENSA_SIZE "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-size${ESP8266_EXEC_SUFFIX}")
+file(GLOB_RECURSE ESP8266_ESPTOOL "${ARDUINO_ESP8266_TOOLS}/esptool${ESP8266_EXEC_SUFFIX}")
 
 message(STATUS "Using ARDUINO_ESP8266_DIR ${ARDUINO_ESP8266_DIR}")
 message(STATUS "Using ARDUINO_ESP8266_TOOLS ${ARDUINO_ESP8266_TOOLS}")
@@ -43,7 +43,7 @@ set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlong
 set(OPTIMIZE_FLAGS "-O2")
 
 set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -fno-inline-functions ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
-set(CMAKE_CXX_FLAGS "-std=c++14 -fno-exceptions -fno-rtti ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
+set(CMAKE_CXX_FLAGS "-std=c++11 -fno-exceptions -fno-rtti ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE "-DNEDBUG" CACHE STRING "C++ compiler flags release" FORCE)
 set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/lib\" -u call_user_start -u _printf_float -u _scanf_float -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read" CACHE STRING "Linker flags" FORCE)
 
