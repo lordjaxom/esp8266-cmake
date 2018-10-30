@@ -9,7 +9,11 @@ set(ARDUINO_ESP8266_LIBRARIES
         SPI
         SPISlave
         Ticker
-        Wire)
+        Wire
+        PubSubClient
+        Time
+        FastLED
+        NTPClient)
 
 if(NOT "$ENV{ARDUINO_ESP8266_LIBRARIES}" STREQUAL "")
     list(APPEND ARDUINO_ESP8266_LIBRARIES $ENV{ARDUINO_ESP8266_LIBRARIES})

@@ -17,7 +17,6 @@ find_library(ESP8266_SDK_LIB_JSON json "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_LWIP lwip "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_LWIP_GCC lwip_gcc "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_MAIN main "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_MESH mesh "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_NET80211 net80211 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_PHY phy "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
 find_library(ESP8266_SDK_LIB_PP pp "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
@@ -42,7 +41,6 @@ set(ARDUINO_DEP_LIBS
         "${ESP8266_SDK_LIB_HAL}"
         "${ESP8266_SDK_LIB_LWIP_GCC}"
         "${ESP8266_SDK_LIB_MAIN}"
-        "${ESP8266_SDK_LIB_MESH}"
         "${ESP8266_SDK_LIB_NET80211}"
         "${ESP8266_SDK_LIB_PHY}"
         "${ESP8266_SDK_LIB_PP}"
