@@ -13,7 +13,8 @@ set(ARDUINO_ESP8266_LIBRARIES
         PubSubClient
         Time
         FastLED
-        NTPClient)
+        NTPClient
+        NeoPixelBus_by_Makuna)
 
 if(NOT "$ENV{ARDUINO_ESP8266_LIBRARIES}" STREQUAL "")
     list(APPEND ARDUINO_ESP8266_LIBRARIES $ENV{ARDUINO_ESP8266_LIBRARIES})

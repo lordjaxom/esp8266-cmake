@@ -40,12 +40,12 @@ set(CMAKE_C_COMPILER "${ESP8266_XTENSA_C_COMPILER}")
 set(CMAKE_CXX_COMPILER "${ESP8266_XTENSA_CXX_COMPILER}")
 
 set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlongcalls -nostdlib -mtext-section-literals -DICACHE_FLASH -D__ets__")
-set(OPTIMIZE_FLAGS "-O2")
+set(OPTIMIZE_FLAGS "-Os")
 
 set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -fno-inline-functions ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)
 set(CMAKE_CXX_FLAGS "-std=c++11 -fno-exceptions -fno-rtti ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C++ compiler flags" FORCE)
 set(CMAKE_CXX_FLAGS_RELEASE "-DNEDBUG" CACHE STRING "C++ compiler flags release" FORCE)
-set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/lib\" -u call_user_start -u _printf_float -u _scanf_float -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read" CACHE STRING "Linker flags" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS "-nostdlib -Wl,--no-check-sections -Wl,-static -Wl,--gc-sections -L\"${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/lib\" -u app_entry -u _printf_float -u _scanf_float -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read" CACHE STRING "Linker flags" FORCE)
 
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -Wl,--end-group")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> -o <TARGET> -Wl,--start-group <OBJECTS> <LINK_LIBRARIES> -Wl,--end-group")

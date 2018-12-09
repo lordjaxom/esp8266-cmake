@@ -42,11 +42,12 @@ target_include_directories(arduino PUBLIC
 target_compile_definitions(arduino PUBLIC
         -DF_CPU=80000000L
         -DARDUINO=10801
-        -DARDUINO_ESP8266_ESP01
+        -DARDUINO_ESP8266_GENERIC
         -DARDUINO_ARCH_ESP8266
-        -DARDUINO_BOARD=ESP8266_ESP01
+        -DARDUINO_BOARD=ESP8266_GENERIC
         -DESP8266
-        -DLWIP_OPEN_SRC)
+        -DLWIP_OPEN_SRC
+        -DTCP_MSS=536)
 
 target_compile_options(arduino PUBLIC
         -U__STRICT_ANSI__)
