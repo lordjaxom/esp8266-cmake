@@ -1,20 +1,23 @@
 set(ARDUINO_ESP8266_LIBRARIES
+        ArduinoOTA
+        AsyncMqttClient
         EEPROM
         ESP8266HTTPClient
         ESP8266HTTPUpdateServer
         ESP8266WebServer
         ESP8266WiFi
+        ESP8266mDNS
+        ESPAsyncTCP
+        FastLED
         Hash
+        NeoPixelBus_by_Makuna
+        NTPClient
         SD
         SPI
         SPISlave
         Ticker
-        Wire
-        PubSubClient
         Time
-        FastLED
-        NTPClient
-        NeoPixelBus_by_Makuna)
+        Wire)
 
 if(NOT "$ENV{ARDUINO_ESP8266_LIBRARIES}" STREQUAL "")
     list(APPEND ARDUINO_ESP8266_LIBRARIES $ENV{ARDUINO_ESP8266_LIBRARIES})

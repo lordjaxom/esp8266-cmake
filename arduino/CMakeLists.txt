@@ -44,7 +44,7 @@ target_compile_definitions(arduino PUBLIC
         -DARDUINO=10801
         -DARDUINO_ESP8266_GENERIC
         -DARDUINO_ARCH_ESP8266
-        -DARDUINO_BOARD=ESP8266_GENERIC
+        -DARDUINO_BOARD="ESP8266_GENERIC"
         -DESP8266
         -DLWIP_OPEN_SRC
         -DTCP_MSS=536)

@@ -6,11 +6,13 @@ function(add_esp8266_executable name)
 
     include(ArduinoEsp8266Flash)
     if(NOT "${ESP8266_FLASH_FOUND}" STREQUAL "TRUE")
-        message(FATAL_ERROR "Flash size not set for ${name} and no fallback in ESP8266_FLASH_SIZE")
+        message(FATAL_ERROR "Flash size not set for ${name}")
     endif()
     message(STATUS "Using flash layout ${ESP8266_FLASH_LAYOUT} for target ${name}")
 
-    set_target_properties("${name}" PROPERTIES LINK_FLAGS "-L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld")
+    set_target_properties("${name}" PROPERTIES
+            COMPILE_DEFINITIONS "ESP8266_TARGET_NAME=\"${name}\""
+            LINK_FLAGS "-L\"${ARDUINO_ESP8266_DIR}/tools/sdk/ld\" -Teagle.flash.${ESP8266_FLASH_LAYOUT}.ld")
 
     add_custom_command(TARGET "${name}" POST_BUILD
             COMMAND "${ESP8266_XTENSA_SIZE}" "$<TARGET_FILE:${name}>")
