@@ -109,7 +109,7 @@ while(NOT "${LIBS_RETRY}" STREQUAL "${LIBS_BUILD}")
 
         list(APPEND LIB_INCLUDES "${LIB_SRC_DIR}")
 
-        message(STATUS "Added library ${LIB}")
+        message(STATUS "Added library ${LIB}: ${LIB_DIR}")
 
     endforeach()
 
