@@ -7,26 +7,23 @@ include(FindPackageHandleStandardArgs)
 
 # include(CheckESP8266Flash)
 include(CheckESP8266ComPort)
+include(CheckESP8266SDK)
 
-find_library(ESP8266_SDK_LIB_AT at "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
+find_library(ESP8266_SDK_LIB_AIRKISS airkiss "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
 find_library(ESP8266_SDK_LIB_AXTLS axtls "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_CRYPTO crypto "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_ESPNOW espnow "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
+find_library(ESP8266_SDK_LIB_CRYPTO crypto "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_ESPNOW espnow "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
 find_library(ESP8266_SDK_LIB_HAL hal "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_JSON json "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_LWIP lwip "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_LWIP_GCC lwip_gcc "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_MAIN main "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_NET80211 net80211 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_PHY phy "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_PP pp "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_PWM pwm "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_SMARTCONFIG smartconfig "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_SSL ssl "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_UPGRADE upgrade "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_WPA wpa "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_WPA2 wpa2 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
-find_library(ESP8266_SDK_LIB_WPS wps "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
+find_library(ESP8266_SDK_LIB_LWIP lwip2-536-feat "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
+find_library(ESP8266_SDK_LIB_MAIN main "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_NET80211 net80211 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_PHY phy "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_PP pp "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_SMARTCONFIG smartconfig "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_SSL bearssl "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
+find_library(ESP8266_SDK_LIB_WPA wpa "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_WPA2 wpa2 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
+find_library(ESP8266_SDK_LIB_WPS wps "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
 
 set(ARDUINO_INC_DIRS
         "${ARDUINO_ESP8266_DIR}/cores/esp8266"
@@ -35,17 +32,18 @@ set(ARDUINO_INC_DIRS
         "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip/include")
 
 set(ARDUINO_DEP_LIBS
+        "${ESP8266_SDK_LIB_AIRKISS}"
         "${ESP8266_SDK_LIB_AXTLS}"
         "${ESP8266_SDK_LIB_CRYPTO}"
         "${ESP8266_SDK_LIB_ESPNOW}"
         "${ESP8266_SDK_LIB_HAL}"
-        "${ESP8266_SDK_LIB_LWIP_GCC}"
+        "${ESP8266_SDK_LIB_LWIP}"
         "${ESP8266_SDK_LIB_MAIN}"
         "${ESP8266_SDK_LIB_NET80211}"
         "${ESP8266_SDK_LIB_PHY}"
         "${ESP8266_SDK_LIB_PP}"
         "${ESP8266_SDK_LIB_SMARTCONFIG}"
-        "${ESP8266_SDK_LIB_UPGRADE}"
+        "${ESP8266_SDK_LIB_SSL}"
         "${ESP8266_SDK_LIB_WPA}"
         "${ESP8266_SDK_LIB_WPA2}"
         "${ESP8266_SDK_LIB_WPS}"
@@ -56,16 +54,19 @@ set(ARDUINO_DEP_LIBS
 
 set(ARDUINO_DEFINITIONS
         F_CPU=80000000L
-        ARDUINO=10801
+        ARDUINO=10809
         ARDUINO_ESP8266_GENERIC
         ARDUINO_ARCH_ESP8266
         ARDUINO_BOARD="ESP8266_GENERIC"
+        BEARSSL_SSL_BASIC
         ESP8266
         LWIP_OPEN_SRC
+        LWIP_FEATURES=1
+        LWIP_IPV6=0
+        NONOSDK221=1
         TCP_MSS=536)
 
 set(ARDUINO_OPTIONS
-        -U__STRICT_ANSI__
         -include Arduino.h)
 
 find_library(ARDUINO_LIBRARY arduino HINTS "${_IMPORT_PREFIX}/lib")
@@ -112,3 +113,6 @@ foreach(LIB ${ArduinoEsp8266_FIND_COMPONENTS})
 endforeach()
 
 include(ArduinoEsp8266Targets)
+
+add_custom_target("_Erase_Flash"
+        COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 erase_flash --end)

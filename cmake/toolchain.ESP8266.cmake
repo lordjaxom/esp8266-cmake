@@ -25,21 +25,26 @@ include(CheckESP8266CoreDir)
 include(CheckESP8266ToolsDir)
 
 file(GLOB_RECURSE ESP8266_XTENSA_C_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-gcc${ESP8266_EXEC_SUFFIX}")
-file(GLOB_RECURSE ESP8266_XTENSA_CXX_COMPILER "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
-file(GLOB_RECURSE ESP8266_XTENSA_SIZE "${ARDUINO_ESP8266_TOOLS}/xtensa-lx106-elf-size${ESP8266_EXEC_SUFFIX}")
-file(GLOB_RECURSE ESP8266_ESPTOOL "${ARDUINO_ESP8266_TOOLS}/esptool${ESP8266_EXEC_SUFFIX}")
+get_filename_component(ESP8266_XTENSA_PATH "${ESP8266_XTENSA_C_COMPILER}" DIRECTORY)
+set(ESP8266_XTENSA_CXX_COMPILER "${ESP8266_XTENSA_PATH}/xtensa-lx106-elf-g++${ESP8266_EXEC_SUFFIX}")
+set(ESP8266_XTENSA_SIZE "${ESP8266_XTENSA_PATH}/xtensa-lx106-elf-size${ESP8266_EXEC_SUFFIX}")
+file(GLOB_RECURSE ESP8266_PYTHON "${ARDUINO_ESP8266_TOOLS}/python${ESP8266_EXEC_SUFFIX}")
 
 message(STATUS "Using ARDUINO_ESP8266_DIR ${ARDUINO_ESP8266_DIR}")
 message(STATUS "Using ARDUINO_ESP8266_TOOLS ${ARDUINO_ESP8266_TOOLS}")
+message(STATUS "Using ${ESP8266_XTENSA_PATH} xtensa path")
 message(STATUS "Using ${ESP8266_XTENSA_C_COMPILER} C compiler")
 message(STATUS "Using ${ESP8266_XTENSA_CXX_COMPILER} C++ compiler")
 message(STATUS "Using ${ESP8266_XTENSA_SIZE} size")
-message(STATUS "Using ${ESP8266_ESPTOOL} esptool")
+message(STATUS "Using ${ESP8266_PYTHON} python")
+
+set(ESP8266_ELF2BIN_PY "${ARDUINO_ESP8266_DIR}/tools/elf2bin.py")
+set(ESP8266_UPLOAD_PY "${ARDUINO_ESP8266_DIR}/tools/upload.py")
 
 set(CMAKE_C_COMPILER "${ESP8266_XTENSA_C_COMPILER}")
 set(CMAKE_CXX_COMPILER "${ESP8266_XTENSA_CXX_COMPILER}")
 
-set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlongcalls -nostdlib -mtext-section-literals -DICACHE_FLASH -D__ets__")
+set(COMMON_FLAGS "-ffunction-sections -fdata-sections -falign-functions=4 -mlongcalls -nostdlib -mtext-section-literals -DICACHE_FLASH -D__ets__ -U__STRICT_ANSI__")
 set(OPTIMIZE_FLAGS "-Os")
 
 set(CMAKE_C_FLAGS "-std=gnu99 -pipe -Wpointer-arith -Wno-implicit-function-declaration -fno-inline-functions ${COMMON_FLAGS} ${OPTIMIZE_FLAGS}" CACHE STRING "C compiler flags" FORCE)

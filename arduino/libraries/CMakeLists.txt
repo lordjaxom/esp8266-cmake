@@ -12,7 +12,7 @@ set(ARDUINO_ESP8266_LIBRARIES
         Hash
         NeoPixelBus_by_Makuna
         NTPClient
-        SD
+        PubSubClient
         SPI
         SPISlave
         Ticker
@@ -117,7 +117,7 @@ endwhile()
 
 if(NOT "${LIBS_RETRY}" STREQUAL "")
     set(LIBS_MESSAGE "Following libraries failed to build:")
-    foreach(LIB LIBS_RETRY)
+    foreach(LIB ${LIBS_RETRY})
         set(LIBS_MESSAGE "${LIBS_MESSAGE} ${LIB}")
     endforeach()
     set(LIBS_MESSAGE "${LIBS_MESSAGE}${LIBS_ERRORS}")

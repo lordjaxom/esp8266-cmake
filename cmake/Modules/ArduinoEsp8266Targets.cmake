@@ -17,13 +17,13 @@ function(add_esp8266_executable name)
     add_custom_command(TARGET "${name}" POST_BUILD
             COMMAND "${ESP8266_XTENSA_SIZE}" "$<TARGET_FILE:${name}>")
     add_custom_command(TARGET "${name}" POST_BUILD
-            COMMAND "${ESP8266_ESPTOOL}" -eo "${ARDUINO_ESP8266_DIR}/bootloaders/eboot/eboot.elf" -bo "$<TARGET_FILE:${name}>.bin" -bf 40 -bz ${ESP8266_FLASH_SIZE} -bs .text -bp 4096 -ec -eo "$<TARGET_FILE:${name}>" -bs .irom0.text -bs .text -bs .data -bs .rodata -bc -ec)
+            COMMAND "${ESP8266_PYTHON}" "${ESP8266_ELF2BIN_PY}" --eboot "${ARDUINO_ESP8266_DIR}/bootloaders/eboot/eboot.elf" --app "$<TARGET_FILE:${name}>" --flash_mode dout --flash_freq 40 --flash_size ${ESP8266_FLASH_SIZE} --path "${ESP8266_XTENSA_PATH}" --out "$<TARGET_FILE:${name}>.bin")
 
     set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${name}.bin")
 
     if(NOT "${ESP8266_ESPTOOL_COM_PORT}" STREQUAL "")
         add_custom_target("${name}_flash"
-                COMMAND "${ESP8266_ESPTOOL}" -vv -cd ck -cb 115200 -cp ${ESP8266_ESPTOOL_COM_PORT} -ca 0x00000 -cf "$<TARGET_FILE:${name}>.bin")
+                COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 version --end --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 write_flash 0x0 "$<TARGET_FILE:${name}>.bin" --end)
         add_dependencies("${name}_flash" "${name}")
     endif()
 endfunction()
