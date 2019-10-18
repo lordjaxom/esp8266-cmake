@@ -1,4 +1,5 @@
 set(ARDUINO_ESP8266_LIBRARIES
+        ArduinoJSON
         ArduinoOTA
         AsyncMqttClient
         EEPROM
