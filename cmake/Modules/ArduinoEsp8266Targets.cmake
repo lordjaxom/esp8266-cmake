@@ -23,7 +23,10 @@ function(add_esp8266_executable name)
 
     if(NOT "${ESP8266_ESPTOOL_COM_PORT}" STREQUAL "")
         add_custom_target("${name}_flash"
-                COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 version --end --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 write_flash 0x0 "$<TARGET_FILE:${name}>.bin" --end)
+                COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 write_flash 0x0 "$<TARGET_FILE:${name}>.bin")
         add_dependencies("${name}_flash" "${name}")
+
+        add_custom_target("${name}_cleanflash"
+                COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 erase_flash write_flash 0x0 "$<TARGET_FILE:${name}>.bin")
     endif()
 endfunction()

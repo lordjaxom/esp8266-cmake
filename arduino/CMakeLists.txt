@@ -14,10 +14,11 @@ add_library(arduino STATIC
         ${ARDUINO_SRC_ASM})
 
 target_include_directories(arduino PUBLIC
-        "${ARDUINO_ESP8266_DIR}/cores/esp8266"
-        "${ARDUINO_ESP8266_DIR}/variants/generic"
         "${ARDUINO_ESP8266_DIR}/tools/sdk/include"
-        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip2/include")
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip2/include"
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/include"
+        "${ARDUINO_ESP8266_DIR}/cores/esp8266"
+        "${ARDUINO_ESP8266_DIR}/variants/generic")
 
 target_compile_definitions(arduino PUBLIC
         -DF_CPU=80000000L
@@ -30,8 +31,9 @@ target_compile_definitions(arduino PUBLIC
         -DLWIP_OPEN_SRC
         -DLWIP_FEATURES=1
         -DLWIP_IPV6=0
-        -DNONOSDK221=1
-        -DTCP_MSS=536)
+        -DNONOSDK22x_190703=1
+        -DTCP_MSS=536
+        -DNEW_COM_ABORT)
 
 target_compile_options(arduino PUBLIC)
 

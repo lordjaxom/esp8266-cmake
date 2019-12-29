@@ -7,7 +7,8 @@ include(FindPackageHandleStandardArgs)
 
 # include(CheckESP8266Flash)
 include(CheckESP8266ComPort)
-include(CheckESP8266SDK)
+#include(CheckESP8266SDK)
+set(ESP8266_SDK "NONOSDK22x_190703" CACHE STRING "ESP8266 SDK")
 
 find_library(ESP8266_SDK_LIB_AIRKISS airkiss "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
 find_library(ESP8266_SDK_LIB_AXTLS axtls "${ARDUINO_ESP8266_DIR}/tools/sdk/lib")
@@ -26,10 +27,11 @@ find_library(ESP8266_SDK_LIB_WPA2 wpa2 "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${E
 find_library(ESP8266_SDK_LIB_WPS wps "${ARDUINO_ESP8266_DIR}/tools/sdk/lib/${ESP8266_SDK}")
 
 set(ARDUINO_INC_DIRS
-        "${ARDUINO_ESP8266_DIR}/cores/esp8266"
         "${ARDUINO_ESP8266_DIR}/tools/sdk/include"
-        "${ARDUINO_ESP8266_DIR}/variants/generic"
-        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip/include")
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/lwip2/include"
+        "${ARDUINO_ESP8266_DIR}/tools/sdk/libc/xtensa-lx106-elf/include"
+        "${ARDUINO_ESP8266_DIR}/cores/esp8266"
+        "${ARDUINO_ESP8266_DIR}/variants/generic")
 
 set(ARDUINO_DEP_LIBS
         "${ESP8266_SDK_LIB_AIRKISS}"
@@ -63,8 +65,9 @@ set(ARDUINO_DEFINITIONS
         LWIP_OPEN_SRC
         LWIP_FEATURES=1
         LWIP_IPV6=0
-        NONOSDK221=1
-        TCP_MSS=536)
+        NONOSDK22x_190703=1
+        TCP_MSS=536
+        NEW_COM_ABORT)
 
 set(ARDUINO_OPTIONS
         -include Arduino.h)
@@ -113,6 +116,3 @@ foreach(LIB ${ArduinoEsp8266_FIND_COMPONENTS})
 endforeach()
 
 include(ArduinoEsp8266Targets)
-
-add_custom_target("_Erase_Flash"
-        COMMAND "${ESP8266_PYTHON}" "${ESP8266_UPLOAD_PY}" --chip esp8266 --port ${ESP8266_ESPTOOL_COM_PORT} --baud 115200 erase_flash --end)
